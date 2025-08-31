@@ -1,161 +1,179 @@
 # 📄 CV Intelligent IA
 
-CV Intelligent IA est une application web SaaS qui génère automatiquement :
+## 🚀 Présentation
 
-✅ Un CV adapté à une offre d’emploi
+**CV Intelligent IA** est une application web qui génère automatiquement :
 
-✅ Une lettre de motivation personnalisée
+* ✅ Un **CV adapté** à une offre d’emploi
+* ✅ Une **lettre de motivation personnalisée**
+* ✅ Un **historique des documents générés**
+* ✅ Un **système de crédits et d’abonnements**
 
-✅ (Option future) Conseils pour réussir son entretien
+C’est plus qu’un simple générateur de CV design : l’application utilise l’IA pour **adapter le contenu au texte de l’offre**, optimisant ainsi les chances de passer les filtres ATS (Applicant Tracking Systems).
 
-Contrairement aux générateurs classiques de CV design, notre solution met en avant un vrai “match” intelligent avec l’offre d’emploi, optimisé pour passer les filtres RH/ATS.
+---
 
-## 🚀 Objectif du projet
+## 🛠️ Stack technique
 
-Offrir un outil rapide, simple et accessible pour les étudiants, jeunes diplômés et personnes en insertion professionnelle.
+* **Frontend** : [Next.js (React)](https://nextjs.org/)
+* **Backend/API** : \[Node.js + Express] ou \[Hono] selon export Figma
+* **Base de données & Auth** : [Supabase (PostgreSQL + RLS)](https://supabase.com/)
+* **IA** : [OpenAI GPT-4o / GPT-5](https://platform.openai.com/)
+* **Paiement** : [Stripe](https://stripe.com/) (Abonnements + crédits)
+* **UI** : Identité visuelle (Bleu `#004D9D`, Orange `#FF6600`)
 
-Modèle Freemium :
+---
 
-1 CV gratuit à l’inscription.
+## 💳 Plans & Tarifs (MVP)
 
-Paiement à l’unité (0,30 € / CV) ou abonnement (0,99 € – 2,99 € / mois).
+| Offre                    | Prix         | Contenu                                                                                       |
+| ------------------------ | ------------ | --------------------------------------------------------------------------------------------- |
+| **Gratuit – Découverte** | 0 €          | 1 CV IA offert (sans lettre IA), modèles basiques, stockage 1 mois, téléchargements illimités |
+| **Achat à l’unité**      | 0,30 €       | 1 CV généré + 1 Lettre IA, stockage 1 mois, téléchargements illimités                         |
+| **Abonnement Starter**   | 0,99 €/mois  | 3 crédits inclus, stockage 1 mois, téléchargements illimités                                  |
+| **Abonnement Pro**       | 2,99 €/mois  | 12 crédits inclus, stockage 1 mois, téléchargements illimités                                 |
+| **Abonnement Premium**   | 9,99 €/mois  | CV illimités, templates premium, lettres de motivation, optimisation ATS                      |
+| **Abonnement Business**  | 19,99 €/mois | Tout du Premium + templates exclusifs, support prioritaire, analytics avancés                 |
 
-Déploiement prévu en 1 mois pour une première version fonctionnelle (MVP).
+---
 
-# ✨ Fonctionnalités du MVP
+## 📂 Structure du projet
 
-## 👤 Côté Utilisateur
+```
+cv-intelligent-ia/
+│── frontend/        # Next.js app (UI + pages Figma export)
+│── backend/         # API (Node.js/Hono/Express)
+│── supabase/        # SQL, policies RLS
+│── docs/            # Cahier des charges, maquettes Figma export
+│── README.md        # Ce fichier
+```
 
-Inscription / Connexion (Email + Google/LinkedIn)
+---
 
-Création de profil (infos de base + upload CV existant)
+## ⚙️ Installation
 
-Champ pour coller une offre d’emploi
+### 1. Cloner le projet
 
-Génération IA → CV + Lettre de motivation adaptés
+```bash
+git clone https://github.com/<ton-org>/cv-intelligent-ia.git
+cd cv-intelligent-ia
+```
 
-Export & téléchargement (PDF, DOCX)
+### 2. Configurer les environnements
 
-Historique des documents générés
+Créer deux fichiers `.env` :
 
-1 CV gratuit → paiements Stripe/PayPal pour les suivants
+📌 **frontend/.env.local**
 
-##👨‍💻 Côté Administrateur
+```env
+NEXT_PUBLIC_SUPABASE_URL=xxx
+NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx
+NEXT_PUBLIC_API_URL=http://localhost:4000
+```
 
-Dashboard (utilisateurs, CV générés, revenus)
+📌 **backend/.env**
 
-Gestion utilisateurs (suspension/suppression)
+```env
+PORT=4000
+SUPABASE_URL=xxx
+SUPABASE_SERVICE_KEY=xxx
 
-Suivi paiements & abonnements
+OPENAI_API_KEY=sk-xxx
+STRIPE_SECRET_KEY=sk_live_xxx
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+```
 
-## 🔒 Sécurité & RGPD
+### 3. Installer les dépendances
 
-Authentification JWT
+```bash
+cd frontend && npm install
+cd ../backend && npm install
+```
 
-Mots de passe hashés (bcrypt)
+### 4. Lancer en local
 
-Droit à l’oubli (suppression compte)
+Backend :
 
-RLS activé dans la base de données
+```bash
+cd backend
+npm run dev
+```
 
-## 🛠️ Stack Technique
+Frontend :
 
-Frontend : React.js / Next.js (hébergé sur Vercel ou OVH)
+```bash
+cd frontend
+npm run dev
+```
 
-Backend : Node.js + Express
+👉 App dispo sur [http://localhost:3000](http://localhost:3000)
 
-Base de données : Supabase (PostgreSQL)
+---
 
-IA : OpenAI (GPT-4o / GPT-5)
+## 🔐 Authentification (Supabase)
 
-Paiement : Stripe + PayPal
+* Email + mot de passe
+* Google OAuth (LinkedIn prévu en V2)
+* Table `profiles` : infos personnelles, formations, expériences, compétences
 
-Hébergement :
+---
 
-Frontend → Vercel / OVH
+## 🤖 Génération IA
 
-Backend → OVH / LWS
+* Endpoint `/api/generate`
+* Input : { profil, offre }
+* Output : { cv, coverLetter } (JSON structuré)
+* Affichage → aperçu double (CV + Lettre), export PDF
 
-DB → Supabase
+---
 
-## 📂 Organisation GitHub
+## 💳 Paiements (Stripe)
 
-Repo 1 : cv-intelligent-frontend → Interface utilisateur
+* 1 CV gratuit à l’inscription
+* Paiement unitaire (0,30 € = 1 CV + 1 Lettre)
+* Abonnements (Starter, Pro, Premium, Business)
+* Webhook Stripe → mise à jour crédits
 
-Repo 2 : cv-intelligent-backend → API & logique métier
+---
 
-Workflow :
+## 📊 Admin (MVP)
 
-Branches → Pull requests → Code review → Merge
+* Dashboard : nb utilisateurs, revenus, crédits consommés
+* Gestion comptes : suspendre / supprimer
 
-## 📅 Planning de Développement (MVP – 4 semaines)
+---
 
-S1 : Authentification + DB Supabase + maquettes
+## 📌 Étapes de développement (2 semaines)
 
-S2 : Génération IA + Export PDF/DOCX
+### ⏱️ Semaine 1
 
-S3 : Paiements Stripe/PayPal + Dashboard admin
+* J1-2 : Setup projets, DB Supabase, Auth email + Google
+* J3-4 : Page Profil (CRUD) + API IA `/api/generate`
+* J5 : Génération CV + Lettre (aperçu + export PDF)
 
-S4 : Tests, sécurité, déploiement bêta sur e-petitpas.pro
+### ⏱️ Semaine 2
 
-## 💳 Monétisation
+* J6 : Historique (listes + téléchargement)
+* J7-8 : Stripe Checkout + crédits + paywall
+* J9 : Admin (stats + gestion comptes)
+* J10 : QA + déploiement bêta (Vercel + OVH/LWS)
 
-Version gratuite : 1 CV généré (sans lettre IA, lettre générique par défaut)
+---
 
-Achat unitaire : 0,30 € = 1 crédit (CV + Lettre IA)
+## ✅ Roadmap post-MVP
 
-Abonnement Standard (0,99 €/mois) : 3 crédits inclus + stockage 1 mois
+* Ajout LinkedIn OAuth
+* Multi-templates de CV
+* Export DOCX
+* PayPal comme 2e méthode de paiement
+* Analytics avancés (tableaux de bord)
+* Application mobile (React Native)
 
-Abonnement Premium (2,99 €/mois) : 12 crédits inclus + stockage 1 mois
+---
 
-Téléchargement illimité des CV déjà générés
+## 👨‍💻 Auteurs
 
-## 🎨 Design & UX
+Projet initié par **Alix Herivelona – E-petitpas collaboration avec enfant prod évolution et E-petitpas Madagascar**
+Développement collaboratif (Frontend, Backend, Supabase, IA, Stripe).
 
-Interface simple et responsive (mobile, tablette, desktop)
-
-Identité visuelle : bleu & orange (logo officiel e-petitpas.pro)
-
-3 modèles de CV disponibles dès le MVP
-
-Polices recommandées : Times New Roman, Tahoma, Arial
-
-## 🔮 Fonctionnalités Futures
-
-+10 modèles de CV design
-
-Traduction multilingue (EN, ES, etc.)
-
-Coach IA pour préparation aux entretiens
-
-Génération de portfolio en ligne
-
-Application mobile (iOS & Android)
-
-Intégration avec LinkedIn / Indeed (import auto d’offres)
-
-## 📌 Critères d’acceptation du MVP
-
-L’utilisateur peut créer un compte
-
-Générer un CV gratuit avec l’IA
-
-Payer pour générer plus de CV/lettres
-
-Télécharger ses documents en PDF/DOCX
-
-L’admin peut gérer utilisateurs, paiements et tarifs
-
-## 👥 Équipe & Collaboration
-
-1 Développeur Frontend
-
-1 Développeur Backend
-
-1 QA / Test
-
-Gestion de projet et communication via GitHub Issues + Pull Requests
-
-## 📜 Licence
-
-À définir (MIT, GPL, ou propriétaire selon stratégie).
+---
